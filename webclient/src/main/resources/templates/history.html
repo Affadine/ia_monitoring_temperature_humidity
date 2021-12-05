@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <title>Historique temp&eacute;ratures</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+      
+       
+      <script th:src="@{/main.js}"></script>
+      <link rel="icon" type="image/x-icon" th:href="@{thermometer.png}" > 
+      <link th:href="@{/main.css}" rel="stylesheet" />
+       
+      <head>
+   <body ng-app="SmartEnvManagement" ng-controller="SmartEnvController">
+   
+   		
+      <h3>
+         Enregistrements de temp&eacute;rature
+      </h3>
+      <form ng-submit="submitSensorMeasure()">
+         <table border="0">
+         	<!-- 
+            <tr>
+               <td>id</td>
+               <td>{{sensorMeasureForm.Id}}</td>
+            </tr>
+            <tr>
+               <td>id</td>
+               <td><input type="text" ng-model="sensorMeasureForm.id" /></td>
+            </tr>
+             -->
+            <tr>
+               <td>Type</td>
+               <td><input type="text" ng-model="sensorMeasureForm.measureType"  /></td>
+            </tr>
+              <tr>
+               <td>Unit&eacute;</td>
+               <td><input type="text" ng-model="sensorMeasureForm.unit"  /></td>
+            </tr>
+              <tr>
+               <td>Date</td>
+               <td><input type="text" ng-model="sensorMeasureForm.date"  /></td>
+            </tr>
+              <tr>
+               <td>Value</td>
+               <td><input type="text" ng-model="sensorMeasureForm.value"  /></td>
+            </tr>
+            <tr>
+               <td colspan="2">
+                  <input type="submit" value="Submit" class="blue-button" />
+               </td>
+            </tr>
+         </table>
+      </form>
+      <br/>
+      <a class="create-button" ng-click="createSensorMeasure()">Create SensorMeasure</a>
+      <table border="1">
+         <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Unit&eacute;</th>
+            <th>Date</th>
+            <th>Valeur</th>
+            <th>Cible</th>
+            <th>Edit</th>
+            <th>Delete</th>
+         </tr>
+         <!-- $scope.sensorMeasure -->
+         <tr ng-repeat="sensorMeasure in sensorMeasures">
+            <td> {{ sensorMeasure.id }}</td>
+            <td> {{ sensorMeasure.measureType }}</td>
+            <td> {{ sensorMeasure.unit }}</td>
+            <td> {{ sensorMeasure.date }}</td>
+            <td >{{ sensorMeasure.value }}</td>
+            <td >{{ sensorMeasure.targetValue }}</td>
+            <td>
+            <a ng-click="editSensorMeasure(sensorMeasure)" class="edit-button">Edit</a>
+            </td>
+            <td>
+            <a ng-click="deleteSensorMeasure(sensorMeasure)" class="delete-button">Delete</a>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>

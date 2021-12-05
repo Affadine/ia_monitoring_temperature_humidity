@@ -1,0 +1,440 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+   
+   
+      <title>Historique temp&eacute;ratures</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+
+      <script th:src="@{/index_recorder.js}"></script>
+      <script th:src="@{/main.js}"></script>
+      <script th:src="@{/gauge.min.js}"></script>
+      <link rel="icon" type="image/x-icon" th:href="@{thermometer.png}" >      
+      <link th:href="@{/main.css}" rel="stylesheet" />
+	  <link th:href="@{/index_editor.css}" rel="stylesheet">
+	  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+
+      <head>
+
+   <body ng-app="SmartEnvManagement" ng-controller="SmartEnvController">
+   		<button  ng-click="reloadPage();">Rafraichir</button>
+   
+   		<P/>
+
+		<form ng-show="showTheForm" ng-submit="processForm()">
+		    <button>Submit</button>
+		    <button type="button" ng-click="showTheForm = false">Cancel</button>
+		</form>
+   		 <fieldset name=''>
+   		 	 <legend>Temp&eacute;rature cible</legend>
+	 		 	 cible : {{currentTemperature.targetValue}}
+	                <br/>
+	                 <button type="button" ng-click="showEditTemperatureProgramming = true">Modifier</button>
+	                 <form ng-submit="submitTemperatureProgramming(); showEditTemperatureProgramming = false"  ng-show="showEditTemperatureProgramming">
+	                 	<input type="text" ng-model="sensorProgrammingForm.value"  size="10" />
+	                 	<input type="submit" value="Soumettre" class="blue-button" />
+	                 </form>
+         </fieldset>
+   		<br/>
+   		<a th:href="@{/history}">Historique des température</a>
+   		<!--  <a th:href="addPerson">add Person</a> -->
+
+   <canvas data-type="radial-gauge"
+        data-width="300"
+        data-height="300"
+        data-units="° Celcius"
+        data-title="Temperature"
+        data-value="{{currentTemperature.value}}"
+        data-min-value="-10"
+        data-max-value="50"
+        data-major-ticks="[-10,0,10,20,30,40,50]"
+        data-minor-ticks="2"
+        data-stroke-ticks="true"
+        data-highlights='[
+                    {"from": -10, "to": {{middleValue}}, "color": "rgba(0,0, 255, .3)"},
+                    {"from": {{middleValue}}, "to": 50, "color": "rgba(255, 0, 0, .3)"}
+                ]'
+        data-ticks-angle="225"
+        data-start-angle="67.5"
+        data-color-major-ticks="#ddd"
+        data-color-minor-ticks="#ddd"
+        data-color-title="#eee"
+        data-color-units="#ccc"
+        data-color-numbers="#eee"
+        data-color-plate="#222"
+        data-border-shadow-width="0"
+        data-borders="true"
+        data-needle-type="arrow"
+        data-needle-width="2"
+        data-needle-circle-size="7"
+        data-needle-circle-outer="true"
+        data-needle-circle-inner="false"
+        data-animation-duration="1500"
+        data-animation-rule="linear"
+        data-color-border-outer="#333"
+        data-color-border-outer-end="#111"
+        data-color-border-middle="#222"
+        data-color-border-middle-end="#111"
+        data-color-border-inner="#111"
+        data-color-border-inner-end="#333"
+        data-color-needle-shadow-down="#333"
+        data-color-needle-circle-outer="#333"
+        data-color-needle-circle-outer-end="#111"
+        data-color-needle-circle-inner="#111"
+        data-color-needle-circle-inner-end="#222"
+        data-value-box-border-radius="0"
+        data-color-value-box-rect="#222"
+        data-color-value-box-rect-end="#333"
+        data-font-value="Led"
+        data-font-numbers="Led"
+        data-font-title="Led"
+        data-font-units="Led"
+></canvas>
+   
+   
+      </body>
+   
+   
+   
+   <!--  
+   
+  <canvas data-type="linear-gauge"
+    data-width="120"
+    data-height="400"
+    data-units="Â°C"
+    data-min-value="0"
+    data-start-angle="90"
+    data-ticks-angle="180"
+    data-value-box="false"
+    data-max-value="40"
+    data-major-ticks="0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40"
+    data-minor-ticks="2"
+    data-stroke-ticks="true"
+    data-highlights='[ {"from": 0 "to": 40, "color": "rgba(200, 50, 50, .75)"} ]'
+    data-color-plate="#fff"
+    data-border-shadow-width="0"
+    data-borders="false"
+    data-needle-type="arrow"
+    data-needle-width="2"
+    data-needle-circle-size="7"
+    data-needle-circle-outer="true"
+    data-needle-circle-inner="false"
+    data-animation-duration="1500"
+    data-animation-rule="linear"
+    data-bar-width="10"
+    data-value="35"
+>
+</canvas>
+   
+-->
+   <!-- 
+    <button id="record">Record</button>
+    <button id="stop" disabled>Stop</button>
+    <button id="play" disabled>Play</button>
+    <button id="save" disabled>Send</button>
+    
+    <button id="start_record">Record</button>
+    <button id="stop_record" disabled>Stop</button>
+    <button id="recording_result" disabled>Play</button>
+    <button id="import_record_btn" disabled>Send</button>
+ -->
+    <div id="saved-audio-messages">
+  		  <h2>Commande vocale</h2> <label id='recordResult'></label>
+    </div>
+
+
+
+
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+
+
+<form ng-submit="submitOrder()" >
+		<label for="mySelect">Commnade:</label>
+		<select id="select_order" ng-options="item as item.label for item in listOrders track by item.value" ng-model="selected"></select>
+        <input type="submit" value="Soumettre" class="blue-button" />
+ </form>
+
+<br/>
+
+
+<div class="row tabs-below">
+	<div class="tab-content">
+		<div class="tab-pane active" id="recorder">
+			<div class="tab-body" style="height:530px;width:50%;overflow: hidden;">
+				<div class="row top-buffer">
+					<div class="recording_area">
+						<div style="TEXT-ALIGN: center;height:110px;" id="record_draw">
+						</div>
+						<div style="TEXT-ALIGN: center;margin-top:15px;">
+							<button style="" type="button" class="btn btn-default btn-circle btn-xl" id="start_record" title="Démarrer l'enregistrement">
+								<i class="fa fa-microphone"></i>
+							</button>
+							<button style="display: none;" type="button" class="btn btn-default btn-circle btn-xl" id="stop_record" title="Arrêter l'enregistrement">
+								<i class="fa  fa-stop"></i>
+							</button>
+						</div>
+						<div class="recording_result" style="min-height:100px;">
+							<div style="TEXT-ALIGN: center;margin-top:15px;display:none;" id="record_output">
+								<audio id="audio_result" controls="true" src="" style="width:100%;">
+								</audio><br>
+								<a href="" id="audio_download">
+									<button type="button" class="btn btn-default" id="import_record_btn">
+										<i class="fa fa-download"></i>&nbsp; Envoyer
+									</button>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<script type="text/javascript">
+	var str_drag = "Aucun son ne peut être édité, veuillez d'abord enregistrer le son!";
+	var str_leftc = "Canal gauche";
+	var str_rightc = "Canal droit";
+	var str_position = "Lancer :";
+	var str_selection = "Sélection :";
+	var firstClickEditor = true;
+
+	function refresh_statu() {
+		if ( $('#audioLayerControl')[0].my_status() == "play" )	{
+			$("#btn_play").html("<i class='fa fa-pause'>");
+		} else {
+			$("#btn_play").html("<i class='fa fa-play'>");
+		}
+		if ( $('#audioLayerControl')[0].my_status() == "play" || 
+			$('#audioLayerControl')[0].my_status() == "pause" )
+		{
+			$("#btn_set_start").removeClass("disabled");
+			$("#btn_set_end").removeClass("disabled");
+		} else {
+			$("#btn_set_start").addClass("disabled");
+			$("#btn_set_end").addClass("disabled");
+		}
+	}
+
+	function play_fun() {
+		if ( $('#audioLayerControl')[0].playStatu == "play" ) {
+			$('#audioLayerControl')[0].my_pause();
+		} else  {
+			$('#audioLayerControl')[0].my_setupdateui(refresh_statu);
+			$('#audioLayerControl')[0].my_play();
+		}
+		refresh_statu();
+	}
+
+	function stop_fun() {
+		$('#audioLayerControl')[0].my_stop();
+		refresh_statu();
+	}
+
+	function set_start_sel() {
+		$('#audioLayerControl')[0].set_start_sel();
+	}
+
+	function set_end_sel() {
+		$('#audioLayerControl')[0].set_end_sel();
+	}
+
+	$("#pluswrap").hide();
+
+	$(window).load(function(){
+		initRecorder();
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		  var target = $(e.target).attr("href") // activated tab
+		  //alert(target);
+		  if ( target == "#editor" ) {
+			  if ( firstClickEditor ) {
+				  $("#audioloader").html("<i class='fa fa-refresh fa-spin'></i>");
+				  initEditor();
+				  $("#audioloader").html("");
+				  firstClickEditor = false;
+			  }
+		  }
+		});
+	});
+	
+	
+	function initRecorder() {
+ 		//onDocumentLoaded();
+		function update_statu() {
+			var record_status = get_record_status();
+			console.log("record_status = ", record_status);
+			if( record_status == "null" ) {
+				$('#start_record').show();
+				$('#stop_record').hide();
+			} else if( record_status == "ready" ) {
+				$('#start_record').show();
+				$('#stop_record').hide();
+			} else if( record_status == "recording" ) {
+				$('#start_record').hide();
+				$('#stop_record').show();
+			} else if( record_status == "pause" ) {
+				$('#start_record').hide();
+				$('#stop_record').show();
+			}
+		}
+        $('#start_record').click(function (){
+        	start_record(
+                function (msg) {
+                	alert(msg);
+            	},
+            	function draw(data){
+            		//$("#record_draw").html(data.length);
+            	},
+            	$("#record_draw"),
+				$("#record_time")
+            );
+			$("#record_output").hide();
+            update_statu();
+	    });
+
+        $('#stop_record').click(function (){
+        	stop_record(
+                 	function result(url) {
+						$("#audio_result").attr("src",url);
+						$("#audio_download222").attr("href",url);
+                  		$("#record_output").show();
+
+                  		 $.ajax({
+					        url: "/smartenv/audio_message",
+					        type: "POST",
+					        headers: { 'Content-Type': 'audio/x-wav' },
+					        data: record_result_blob,    
+					        cache: false,
+					        contentType: false,
+					        processData: false
+					    });
+
+						fetch('/smartenv/audio_message', {
+							method: 'POST',
+							headers: { 'Content-Type': 'audio/x-wav' },
+							body : record_result_blob
+				        }).then(res => {
+				          console.log("res.status = " + res.statu);
+				          if (res.status === 201) {
+				            return populateAudioMessages();
+				          }
+				          console.log('Invalid status saving audio message: ' + res.status);
+				        });
+                	}
+                );
+			update_statu();
+	    });
+        update_statu();
+
+        $('#import_record_btn').click(function (){
+            if ( !record_result_blob ) 
+                return;
+
+			 $.ajax({
+			        url: "/smartenv/audio_message",
+			        type: "POST",
+			        headers: { 'Content-Type': 'audio/x-wav' },
+			        data: record_result_blob,    
+			        cache: false,
+			        contentType: false,
+			        processData: false,
+			        success: function(response){
+						 //Traitement de la réponse
+						 console.log("Post traitement envoi de message : Response = ", response);
+						 $("#select_order").val(response);
+						 //$scope.selected.value = response;
+						 $("#recordResult").text("Résultat enregistrement : " + response);
+					}
+			    });
+        });
+	}
+
+    function initEditor() {
+ 		onDocumentLoaded();
+        var supportLabel =  $('#browser_support')[0];
+        if (typeof(window.AudioContext || window.webkitAudioContext) === 'undefined')
+        {
+          supportLabel.className = "label label-important";
+          supportLabel.innerHTML = 'no web audio API support. try the latest Google Chrome build.';
+		  $('#welcomeModal').modal('show');
+        }
+
+        $('#savelink').click(function (){
+        	$('#audioLayerControl')[0].save($('#savelink')[0]);
+			if ( typeof(pplike_manualshowlike) != "undefined" )
+				pplike_manualshowlike();
+        });
+
+        function get_wavdata()  {
+        	var acontrol = $('#audioLayerControl')[0].audioLayerControl;
+        	var wave = new WaveTrack();
+            var sequenceList = [];
+            for(var i = 0; i < acontrol.listOfSequenceEditors.length; ++i)
+            {
+                sequenceList.push(acontrol.listOfSequenceEditors[i].audioSequenceReference);
+            }
+            wave.fromAudioSequences(sequenceList);
+            return wave.encodeWaveFile();
+        }
+
+ 	   function handleFileSelect2(evt) {
+ 	 		   evt.stopPropagation();
+	 		   evt.preventDefault();
+	 		   var files = evt.target.files;
+	 		  $('#audioLayerControl')[0].loadfile(files,($(evt.currentTarget).attr('id') == "filesadd") );
+	 		  this.value = null;
+ 		}
+	  	document.getElementById('files').addEventListener('change', handleFileSelect2, false);
+ 	  	document.getElementById('filesadd').addEventListener('change', handleFileSelect2, false);
+
+ 	   $('#audioLayerControl')[0].setStartAndEndFun(function st(){
+ 		  	$("#audioloader").html("<i class='fa fa-refresh fa-spin'></i>");
+ 	 	   },function ed(ret){
+ 	 	 	 if ( ret == "ok" ) {
+ 	 	 	 	 $("#audioloader").html("");
+ 	 	 	 }
+ 	 	 	 if ( ret == "error" ) {
+	 			$("#audioloader").html("");
+	 			$("#loadfileerror").modal("show");
+	 		 }
+ 	 	 },function error(info){
+ 	 		$("#errordlginfo").html(info);
+ 			$("#commerrorinfo").modal("show");
+ 	 	 },function lockscreen(lock){
+			if ( lock ) {
+				$("#pluswrap").show();
+			} else {
+				$("#pluswrap").hide();
+			}
+ 	 	 }
+ 	 	 );
+
+ 	   	$('#audioLayerControl')[0].setUpdateUndoUIFun(function setUpdateUnDoUI(hisLen,curPos){
+			if( hisLen <= 0 || curPos > hisLen - 1  )  {
+				$("#btn_undo").addClass("disabled");
+				$("#btn_redo").addClass("disabled");
+				return;
+			}
+			if ( curPos <= -1 )  {
+				$("#btn_undo").addClass("disabled");
+			} else {
+				$("#btn_undo").removeClass("disabled");
+			}
+			if ( curPos == hisLen - 1 )  {
+				$("#btn_redo").addClass("disabled");
+			} else {
+				$("#btn_redo").removeClass("disabled");
+			}
+	 	});
+      }
+ </script>
+	
+</body>
+</html>
